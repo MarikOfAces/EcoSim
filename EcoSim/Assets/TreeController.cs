@@ -7,6 +7,8 @@ public class TreeController : MonoBehaviour
 
     public int age = 0;
     public int breedStr;
+	public int fruitCount;
+	public int maxFruit;
 
     public float sizeModify;
     public float growSpeed;
@@ -14,16 +16,20 @@ public class TreeController : MonoBehaviour
     public float maxSize;
     public float heightModify;
 
+	public float health;
+
     public Vector3 VecDebug; //make this = to a vector you wish to track in inspector. 
 
     // Use this for initialization
     void Start()
     {
+		tag = 
         breedStr = Random.Range(10, 25);
         sizeModify = Random.Range(1.0f, 3.0f);
         growSpeed = Random.Range(1.00001f, 1.00005f);
         maxSize = Random.Range(5.0f, 20.0f);
         heightModify = Random.Range(3.0f, 10.0f);
+		maxFruit = (int)breedStr * (int)maxSize;
 
         spaceNeeded = (maxSize * 1.5f);
         Vector3 temp = new Vector3(sizeModify,sizeModify*heightModify,sizeModify);
@@ -37,6 +43,9 @@ public class TreeController : MonoBehaviour
     void Update()
     {
         age++;
+		if (Random.Range(0, 100) < 1) {
+			spawnFruit();
+		}
         if (transform.localScale.y < maxSize)
         {
             grow();
@@ -92,4 +101,9 @@ public class TreeController : MonoBehaviour
         Vector3 tempVec = new Vector3(transform.position.x ,(Terrain.activeTerrain.SampleHeight(transform.position)+(transform.localScale.y)),transform.position.z);
         transform.position = tempVec;
     }
+	void spawnFruit()
+	{
+		fruitCount++;
+		health -= 0.1f;
+	}
 }

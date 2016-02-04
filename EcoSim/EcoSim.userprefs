@@ -1,0 +1,19 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\AnimalStats.cs">
+    <Files>
+      <File FileName="Assets\spawnAnimals.cs" Line="1" Column="1" />
+      <File FileName="Assets\SpeciesManage.cs" Line="1" Column="1" />
+      <File FileName="Assets\AniamlSpawning.cs" Line="1" Column="1" />
+      <File FileName="Assets\AnimalStats.cs" Line="444" Column="5" />
+      <File FileName="Assets\NpcNavigation.cs" Line="1" Column="1" />
+      <File FileName="Assets\TreeController.cs" Line="26" Column="9" />
+      <File FileName="Assets\TreeManage.cs" Line="1" Column="1" />
+      <File FileName="Assets\SpeciesCreator.cs" Line="87" Column="23" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
