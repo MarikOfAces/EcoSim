@@ -21,6 +21,8 @@ public class AnimalStats : MonoBehaviour
 	public float thirst;
 	public float energy;
 	public float speed;
+	public GameObject foodTarget;
+	public GameObject breedTarget;
 
 
 
@@ -40,17 +42,20 @@ public class AnimalStats : MonoBehaviour
 
 
     //public int noOfSpecies = 10;
-    public string sName;
+    public int sNumber;
     public int Number;
     public float breedAge;
     public float deathAge;
+	public int breedCount;
     public float baseAttack;
     public float baseHealth;
     public float size;
     public enum Diet { Herb, Omni, Carn } // 0 = Herb, 1 = Omni, 2 = Carn
-	float wanderRadius = 2.0f;
+	float wanderRadius = 20.0f;
+	bool needToEat = false;
 	public float startTime = 0;
 	public float currentTime = 0;
+	public Vector3 NewTarget;
 
     void Start()
     {
@@ -63,7 +68,7 @@ public class AnimalStats : MonoBehaviour
 			thirst = 100.0f;
 			energy = 100.0f;
 			speed = 1.0f;
-		death ();
+		deathCheck();
 			
 			//name = ("animal " + i);
 	}
@@ -236,120 +241,84 @@ public class AnimalStats : Species {
 
 	void LifeCycle()
 	{
+
+
 		age += 0.01f;
 		float thirdAge;
 		thirdAge = deathAge/3;
 		float twothirdAge;
 		twothirdAge = thirdAge*2;
+
+		HungerCheck();
+		Wander ();
+		updateStats();
+		deathCheck();
+
+
 		if (age < thirdAge)   //1st third of life = child
 		{
 				//DO CHILDHOOD
+
+
+
 		}
 		if ((age > thirdAge)&&(age < twothirdAge))//middle portion of life, able to breed.
 		{
-				//DO PRIME LIFE
+
+			BreedCheck();
+
 		}
 		
-		if (age < twothirdAge)//final portion of life. Lose ability to procreate?
+		if (age < twothirdAge)//final portion of life.
 		{
-			Breed();
+
+			BreedCheck();
+
 			
-		}
-		if (age > deathAge)
-		{
-			Destroy(gameObject);
-		}
-		
+		}	
 	}
 
-	void Navigate()
-	{
-		
-	}
-
-	void Breed()
+	void BreedCheck()
 	{
 		if (myGender == Gender.Male)
 		{
-			
+			breedTarget = scanArea("Animal");
+			if (breedTarget.GetComponent<AnimalStats>().sNumber == sNumber)
+			{
+				NavMeshAgent agent = GetComponent<NavMeshAgent> ();
+				agent.destination = breedTarget.transform.position;
+				if(Vector3.Distance(breedTarget.transform.position,transform.position) < 5.0f)
+				{
+					if (breedTarget.GetComponent<AnimalStats>().willBreed && (breedTarget.GetComponent<AnimalStats>().myGender == Gender.Female))//If they will breed
+					breedTarget.GetComponent<AnimalStats>().breedTarget = this.gameObject;	//Do it.
+
+				}
+			}
 		}
 		if (myGender == Gender.Female)
 		{
-			while (willBreed == true)
+			if (breedTarget != null)	//If we have 'Male DNA'
 			{
-				GameObject[] objects;
-				objects = GameObject.FindGameObjectsWithTag(gameObject.tag);        //Scan through species members nearby, look for a mate
-				for (int i = 0; i < objects.Length; i++)
-				{
-					
-					//Debug.Log(objects[i].transform.position);
-					
-					if (objects[i].name == name)
-					{
-						Debug.Log(objects[i].name + name);
-						Debug.Log("Distance: " + Vector3.Distance(gameObject.transform.position, objects[i].transform.position));
-						Vector3 target = objects[i].transform.position;
-						NavMeshAgent agent = GetComponent<NavMeshAgent>();          //Lookat & move to target mate
-						agent.destination = target;
-						//agent.destination = objects[i].transform.position;
-						transform.LookAt(objects[i].transform.position);            
-						if (Vector3.Distance(transform.position,objects[i].transform.position) < 1.0f)  //If next to mate... then mate.
-						{
-							
-							float ageTemp = age;
-							float hpTemp = health;
-							float attTemp = attack;
-							float dDayTemp = dDay;
-							//bool hasGoalTemp = false;
-							Vector3 tempVec = transform.position;
-							Gender tempGend = myGender;
-							willBreed = false;
-							//Birth();
-							Debug.Log("Baby Made!");
-							//hasGoal = hasGoalTemp
-							age = ageTemp;
-							health = hpTemp;
-							attack = attTemp;
-							dDay = dDayTemp;
-							transform.position = tempVec;
-							myGender = tempGend;
-							
-						}
-					}
-				}
+				breedCount++;
+				GameObject babyAnimal = null;
+				babyAnimal = Instantiate(gameObject);	
+				babyAnimal.name = (name+ ' ' +breedCount);
+				babyAnimal.transform.parent = transform;
+				
+				babyAnimal.GetComponent<AnimalStats>().deathAge = (breedTarget.GetComponent<AnimalStats>().deathAge + deathAge / 2);
+               	babyAnimal.GetComponent<AnimalStats>().breedAge = breedAge;
+             	babyAnimal.GetComponent<AnimalStats>().baseHealth = baseHealth;
+               	babyAnimal.GetComponent<AnimalStats>().baseAttack = baseAttack;
+               	babyAnimal.GetComponent<AnimalStats>().Herbivore = Herbivore;
+               	babyAnimal.GetComponent<AnimalStats>().Carnivore = Carnivore;
+               	babyAnimal.GetComponent<AnimalStats>().sNumber = (SpeciesManage.speciesCount);
+				breedTarget = null;
+				willBreed = false;
 			}
-			
+					
 		}
 	}
-	//void Birth(/*int fHp, int fAtt, int fDDay*/)
-	//{
-	//	
-	//	
-	//	
-	//	Vector3 tempVec = new Vector3(Random.Range(-2.0f, 2.0f), Random.Range(-2.0f, 2.0f), Random.Range(-2.0f, 2.0f));             //Place our baby near the mother.
-	//	//transform.position = (spawnZone += tempVec);
-	//	
-	//	
-	//	health = (baseHealth + Random.Range(-baseHealth / 10, baseHealth / 10));
-	//	attack = (baseAttack + Random.Range(-baseAttack / 10, baseAttack / 10));
-	//	hunger = 100.0f;
-	//	thirst = 100.0f;
-	//	energy = 100.0f;
-	//	speed = 1.0f;
-	//	dDay = (deathAge + (Random.Range(-deathAge / 5, deathAge / 5)));
-	//	age = 0;
-	//	if (Random.Range(0, 2) == 0)
-	//	{
-	//		myGender = Gender.Female;
-	//	}
-	//	else
-	//	{
-	//		myGender = Gender.Male;
-	//	}
-	//	SpeciesCreator tempChild;                                         //Create a new temporary 'Baby animal'
-	//	tempChild = Instantiate<SpeciesCreator>(this);
-	//	tempChild.name = (name);    //Set childs nameto parents name (Name is simply used as a species reference)
-	//}
+
 
 	void Wander()
 	{
@@ -375,8 +344,8 @@ public class AnimalStats : Species {
 			//currentTime = Time.time;
 			if (hasGoal == false) {
 			
-				Vector3 NewTarget = Random.insideUnitSphere * wanderRadius;     //Generate a circle around the snake of radius 'WanderRadius' and choose a random new point in that circle
-				NewTarget += transform.position;                        //Add new target to snakes current position  
+				NewTarget = Random.insideUnitSphere * wanderRadius;     //Generate a circle around the snake of radius 'WanderRadius' and choose a random new point in that circle
+				//NewTarget += transform.position;                        //Add new target to snakes current position  
 				NewTarget += new Vector3 (transform.position.x, Terrain.activeTerrain.SampleHeight (transform.position), transform.position.z);
 			
 				NavMeshAgent agent = GetComponent<NavMeshAgent> ();
@@ -388,8 +357,9 @@ public class AnimalStats : Species {
 			currentTime = Time.time;
 			if ((startTime + 5.0f) <= currentTime) {
 				hasGoal = false;
-			}
-		
+				NewTarget = new Vector3(0,0,0);
+				//NewTarget
+			}	
 		}
 	}
 
@@ -413,21 +383,58 @@ public class AnimalStats : Species {
 			energy -= 0.01f;
 			hunger -= 0.01f;
 		}
+		if (hunger < 0) {
+			hunger = 0;
+			health-= 0.1f;
+		}
 	}
 
-	void hunt()
+	void HungerCheck()
 	{
-		if (hunger < 5) {
+
+		if (hunger < 50) {
+			needToEat = true;
+		}
+		if (hunger > 85)
+			needToEat = false;
+			foodTarget = null;
+
+		if (needToEat) {
 			{
-				if (Herbivore) {
-					//MoveTo objecty
-					//Eat Object
+
+				//print ("HUNGRY");
+				if (Herbivore && (foodTarget == null)) {
+					foodTarget = scanArea("Fruit");
 				}
 			//EAT PLANT LIFE
-		else if (Carnivore) {
-					//Moveto object
+				if (Carnivore && (foodTarget == null)) {
+					foodTarget = scanArea("Meat");
 					//Kill prey
 					//eat
+				}
+				if (foodTarget != null)
+				{
+					NavMeshAgent agent = GetComponent<NavMeshAgent> ();
+					agent.destination = foodTarget.transform.position; //Moveto object
+					//print(Vector3.Distance(gameObject.transform.position,foodTarget.transform.position));
+					if (Vector3.Distance(gameObject.transform.position,foodTarget.transform.position) < 2.0f);
+					{
+						//gameObject.GetComponent<NavMeshAgent> ().Stop ();
+						if (foodTarget.tag == ("Meat"))	
+						{
+							hunger += 1f;
+							foodTarget.GetComponent<AnimalStats>().hunger -= 1.5f ;
+							if (foodTarget.GetComponent<AnimalStats>().hunger <= 0)
+								Destroy(foodTarget);
+						}
+						if (foodTarget.tag == ("Fruit"))
+						{
+							hunger += 0.5f;
+							foodTarget.GetComponent<FruitStats>().Nutrition -=0.5f;
+							if (foodTarget.GetComponent<FruitStats>().Nutrition <= 0)
+							Destroy(foodTarget);
+						}
+					}
 				}
 			}
 		}
@@ -435,14 +442,70 @@ public class AnimalStats : Species {
 
 	void eat()
 	{
+		gameObject.GetComponent<NavMeshAgent> ().Stop ();
+
 	}
 
-	void death(){
+	void deathCheck()
+	{
+		if ((health < 0.1)||(age > deathAge)){
+			gameObject.name = ("Corpse");
+			gameObject.tag = ("Meat");
+			Destroy (gameObject, 120);
+			gameObject.GetComponent<NavMeshAgent>().Stop();
+		}
 		//GameObject tempOBJ;
 		//tempOBJ.transform.position.Set (transform.position.x,transform.position.y,transform.position.z);
 		//tempOBJ.transform.localScale.Set(transform.localScale.x,transform.localScale.y,transform.localScale.z);
 		//tempOBJ = GameObject.CreatePrimitive (PrimitiveType.Cube);
-		Destroy (gameObject);
+		//Destroy (gameObject);
+	}	
+
+	GameObject scanArea(string LookingFor){
+		Collider[] hitColliders = Physics.OverlapSphere (transform.position, 40.0f);
+		int i = 0;
+		//print (LookingFor);
+		foreach (Collider col in hitColliders) {
+			if ((LookingFor == "Animal")&&(sNumber == col.gameObject.GetComponent<AnimalStats>().sNumber))
+			{
+				return col.gameObject;
+
+			}
+			else if (col.tag == LookingFor){
+				if (col.gameObject.transform.position.y > transform.position.y + 1)
+					return null;
+				return col.gameObject;
+				//print("targetFOUND");
+
+			}
+
+		}
+		return null;
 	}
-		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

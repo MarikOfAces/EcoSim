@@ -47,17 +47,25 @@
   <ItemGroup>
      <Compile Include="Assets\AniamlSpawning.cs" />
      <Compile Include="Assets\AnimalStats.cs" />
+     <Compile Include="Assets\FruitStats.cs" />
      <Compile Include="Assets\NpcNavigation.cs" />
      <Compile Include="Assets\SpeciesCreator.cs" />
      <Compile Include="Assets\SpeciesManage.cs" />
      <Compile Include="Assets\TreeController.cs" />
      <Compile Include="Assets\TreeManage.cs" />
+     <Compile Include="Assets\customTimer.cs" />
      <Compile Include="Assets\spawnAnimals.cs" />
+ <Reference Include="UnityEngine.Advertisements">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Advertisements/UnityEngine.Advertisements.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Analytics">
+ <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Cecil">
  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/Mono.Cecil.dll</HintPath>

@@ -13,7 +13,7 @@ public class SpeciesCreator : MonoBehaviour {
 
     //Species Related//
 
-    public string sName;
+    public float sNumber;
     public float breedAge;
     public float deathAge;
     public float baseAttack;
@@ -112,17 +112,20 @@ public class SpeciesCreator : MonoBehaviour {
                     for (int i = 0; i < 5; i++)
                     {
 					//Temp Animal creation
+					//print ("we got here");
 					GameObject tempAnimal = null;
 					//tempAnimal = GameObject.CreatePrimitive(PrimitiveType.Cube);
 					//tempAnimal = GameObject.CreatePrimitive(PrimitiveType.Cube);//("ThisAnimal" + i);
 					tempAnimal = Instantiate(animalPrefab);
 
-					tempAnimal.name = ("ThisAnimal" + i);
+					tempAnimal.name = ("Ani " + i);
 					tempAnimal.transform.parent = gSpecies.transform;
 					tempAnimal.AddComponent<AnimalStats>();
 					tempAnimal.AddComponent<NavMeshAgent>();
+					//print ("we got here 2");
 					//tempAnimal.AddComponent<animalPrefab>();
 					Quaternion nullQuart = new Quaternion(0,0,0,0);
+
 
 					//Species Stats Handling
 					AnimalStats speciesStats = new AnimalStats();
@@ -133,16 +136,10 @@ public class SpeciesCreator : MonoBehaviour {
 					tempAnimal.GetComponent<AnimalStats>().baseAttack = baseAttack;
 					tempAnimal.GetComponent<AnimalStats>().Herbivore = Herbivore;
 					tempAnimal.GetComponent<AnimalStats>().Carnivore = Carnivore;
-
-
-
+					tempAnimal.GetComponent<AnimalStats>().sNumber = (SpeciesManage.speciesCount);
 					//Instantiate(tempAnimal,spawnZone, nullQuart);
-
-
-
-                       	sName = ("animal " + i);
-						
-						
+                       	
+	
                         //tempSpecies = Instantiate<SpeciesCreator>(this);
                         //tempSpecies.name = ("Species" + SpeciesManage.speciesCount);
                         //tempSpecies.tag = ("Species:" + SpeciesManage.speciesCount);
@@ -154,12 +151,6 @@ public class SpeciesCreator : MonoBehaviour {
                         Vector3 onTerrain = new Vector3(transform.position.x, Terrain.activeTerrain.SampleHeight(transform.position), transform.position.z);
                         transform.position = onTerrain;
 
-
-//                        hunger = 100.0f;
-//                        thirst = 100.0f;
-//                        energy = 100.0f;
-//                        speed = 1.0f;
-                        //dDay = (deathAge + (Random.Range(-deathAge / 5, deathAge / 5)));
                         if (Random.Range(0, 2) == 0)
                         {
                             myGender = Gender.Female;
