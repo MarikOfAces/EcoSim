@@ -1,9 +1,10 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\SpeciesCreator.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\AnimalStats.cs">
     <Files>
-      <File FileName="Assets\customTimer.cs" Line="1" Column="1" />
-      <File FileName="Assets\SpeciesCreator.cs" Line="1" Column="1" />
+      <File FileName="Assets\SpeciesCreator.cs" Line="144" Column="59" />
+      <File FileName="Assets\AnimalStats.cs" Line="345" Column="87" />
+      <File FileName="Assets\SpawnWater.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

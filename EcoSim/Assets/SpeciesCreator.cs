@@ -18,6 +18,7 @@ public class SpeciesCreator : MonoBehaviour {
     public float deathAge;
     public float baseAttack;
     public float baseHealth;
+	public float gestPeriod;
     public float size;
 
     public Vector3 spawnZone;
@@ -27,8 +28,7 @@ public class SpeciesCreator : MonoBehaviour {
 	public bool Carnivore = false;	//IF BOTH = TRUE, OMNIVORE
 
     //Animal Related//
-    public enum Gender { Male, Female};
-    public Gender myGender = new Gender();
+	public int genderVal;
     public bool willBreed;
     public float age;
     public float health;
@@ -51,7 +51,7 @@ public class SpeciesCreator : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        maxSpecies = 10;
+        maxSpecies = 1;
         spawnSpecies();
         canGiveBirth = false;
         willBreed = false;
@@ -83,25 +83,27 @@ public class SpeciesCreator : MonoBehaviour {
                     breedAge = deathAge / 5;
                     size = Random.Range(0.5f, 2.0f);
                     baseHealth = (Random.Range(50.0f, 200.0f) * size);
-                    baseAttack = (baseHealth / 10);
+					baseAttack = Random.Range ((baseHealth / 20),(baseHealth / 10));
+					speed = Random.Range(1.0f,4.0f);
+					gestPeriod = breedAge / Random.Range(5.0f,25.0f);
                     //sNumber = SpeciesManage.speciesCount;
                     spawnZone = new Vector3(Random.Range(-100.0f, 100.0f), 0, Random.Range(-100.0f, 100.0f));
-					int dietRand = Random.Range(0,2);
-					if (dietRand == 0)
+					int dietRand = Random.Range(0,3);
+					if (dietRand == 1)
 					{
 						Herbivore = true;
 					Carnivore = false;
 					}	
-					else if (dietRand == 1)
+					else if (dietRand == 2)
 					{
 						Carnivore = true;
 					Herbivore = false;
 					}
-                    //else if (dietRand == 0)
-                    //{
-                    //    Herbivore = true;
-                    //    Carnivore = true;
-                    //}
+					else if (dietRand == 0)
+					{
+						Herbivore = true;
+						Carnivore = true;
+					}
 					
 				  
                     //spawnZone = new Vector3(transform.position.x,Terrain.activeTerrain.SampleHeight(transform.position), transform.position.z);
@@ -109,17 +111,21 @@ public class SpeciesCreator : MonoBehaviour {
 					gSpecies.transform.parent = gameObject.transform;
 				//SPECIES CREATED
                     
-                    for (int i = 0; i < 10; i++)
+                    for (int i = 0; i < 5; i++)
                     {
 					//Temp Animal creation
+					//print ("we got here");
 					GameObject tempAnimal = null;
+					//tempAnimal = GameObject.CreatePrimitive(PrimitiveType.Cube);
+					//tempAnimal = GameObject.CreatePrimitive(PrimitiveType.Cube);//("ThisAnimal" + i);
 					tempAnimal = Instantiate(animalPrefab);
 
-					tempAnimal.name = ("Ani " + i);
+					tempAnimal.name = ("Ani " + i);	
 					tempAnimal.transform.parent = gSpecies.transform;
 					tempAnimal.AddComponent<AnimalStats>();
 					tempAnimal.AddComponent<NavMeshAgent>();
-
+					//print ("we got here 2");
+					//tempAnimal.AddComponent<animalPrefab>();
 					Quaternion nullQuart = new Quaternion(0,0,0,0);
 
 
@@ -132,19 +138,34 @@ public class SpeciesCreator : MonoBehaviour {
 					tempAnimal.GetComponent<AnimalStats>().baseAttack = baseAttack;
 					tempAnimal.GetComponent<AnimalStats>().Herbivore = Herbivore;
 					tempAnimal.GetComponent<AnimalStats>().Carnivore = Carnivore;
+					tempAnimal.GetComponent<AnimalStats>().GestPeriod = gestPeriod;
 					tempAnimal.GetComponent<AnimalStats>().sNumber = (SpeciesManage.speciesCount);
-                        if (Random.Range(0,2) == 0)
-                        {
-                            tempAnimal.GetComponent<AnimalStats>().myGender = AnimalStats.Gender.Female;
-                        }
+					tempAnimal.GetComponent<AnimalStats>().genderVal = Random.Range (0,2);
+					tempAnimal.GetComponent<AnimalStats>().speed = speed;
+
+					//Instantiate(tempAnimal,spawnZone, nullQuart);
+                       	
+	
+                        //tempSpecies = Instantiate<SpeciesCreator>(this);
+                        //tempSpecies.name = ("Species" + SpeciesManage.speciesCount);
+                        //tempSpecies.tag = ("Species:" + SpeciesManage.speciesCount);
+                        //Debug.Log("Death Age (createSpecies)");
+                        // Instantiate(tempAnimal,spawnZone, nullQuart);Debug.Log(myAnimal.deathAge);
 
                         Vector3 tempVec = new Vector3(Random.Range(-10.0f, 10.0f), Random.Range(-10.0f, 10.0f), Random.Range(-10.0f, 10.0f));
                         transform.position = (spawnZone += tempVec);
                         Vector3 onTerrain = new Vector3(transform.position.x, Terrain.activeTerrain.SampleHeight(transform.position), transform.position.z);
                         transform.position = onTerrain;
+
                     }
+
+
+
                     //Destroy(gameObject);  //DO NOT DESTROY, Causes instantiated objects scripts to not run.
                 }
+
+            //}
+                //Destroy(gameObject);
         }
         
     }

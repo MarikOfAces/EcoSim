@@ -49,6 +49,7 @@
      <Compile Include="Assets\AnimalStats.cs" />
      <Compile Include="Assets\FruitStats.cs" />
      <Compile Include="Assets\NpcNavigation.cs" />
+     <Compile Include="Assets\SpawnWater.cs" />
      <Compile Include="Assets\SpeciesCreator.cs" />
      <Compile Include="Assets\SpeciesManage.cs" />
      <Compile Include="Assets\TreeController.cs" />

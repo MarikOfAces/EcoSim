@@ -64,7 +64,7 @@ public class TreeController : MonoBehaviour
 		if ((age > BREED_AGE)&&!RecentlyBred) {
 			int breedChance = Random.Range (1, 1001);
 			if (breedChance > 900) {
-				//print ("TRIED TO BREED");
+				print ("TRIED TO BREED");
 				spawnSappling (breedStr);
 				RecentlyBred = true;
 				//transform
