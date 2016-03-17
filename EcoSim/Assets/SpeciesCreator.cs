@@ -6,7 +6,8 @@ public class SpeciesCreator : MonoBehaviour {
     //Function Related//
 
 	public GameObject animalPrefab;
-    public int maxSpecies = 0;
+    public const int maxSpecies = 5;
+	public const int AnisPerSpecies = 10;
     public float startTime = 0;
     public float currentTime = 0;
     float wanderRadius = 20.0f;
@@ -38,6 +39,7 @@ public class SpeciesCreator : MonoBehaviour {
     public float speed;
     public float energy;
     public float dDay;
+	public float aggression;
 
     public bool hasGoal;
     public bool canGiveBirth;
@@ -51,7 +53,6 @@ public class SpeciesCreator : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        maxSpecies = 1;
         spawnSpecies();
         canGiveBirth = false;
         willBreed = false;
@@ -84,25 +85,21 @@ public class SpeciesCreator : MonoBehaviour {
                     size = Random.Range(0.5f, 2.0f);
                     baseHealth = (Random.Range(50.0f, 200.0f) * size);
 					baseAttack = Random.Range ((baseHealth / 20),(baseHealth / 10));
-					speed = Random.Range(1.0f,4.0f);
-					gestPeriod = breedAge / Random.Range(5.0f,25.0f);
+					speed = Random.Range(5.0f,25.0f);
+					aggression = Random.Range(1.0f,5.0f);
+					gestPeriod = breedAge / Random.Range(1.0f,5.0f);
                     //sNumber = SpeciesManage.speciesCount;
                     spawnZone = new Vector3(Random.Range(-100.0f, 100.0f), 0, Random.Range(-100.0f, 100.0f));
-					int dietRand = Random.Range(0,3);
-					if (dietRand == 1)
+					int dietRand = Random.Range(0,2);
+					if (dietRand == 0)
 					{
 						Herbivore = true;
 					Carnivore = false;
 					}	
-					else if (dietRand == 2)
+					else if (dietRand == 1)
 					{
 						Carnivore = true;
 					Herbivore = false;
-					}
-					else if (dietRand == 0)
-					{
-						Herbivore = true;
-						Carnivore = true;
 					}
 					
 				  
@@ -111,7 +108,7 @@ public class SpeciesCreator : MonoBehaviour {
 					gSpecies.transform.parent = gameObject.transform;
 				//SPECIES CREATED
                     
-                    for (int i = 0; i < 5; i++)
+                    for (int i = 0; i < AnisPerSpecies; i++)
                     {
 					//Temp Animal creation
 					//print ("we got here");
@@ -130,7 +127,6 @@ public class SpeciesCreator : MonoBehaviour {
 
 
 					//Species Stats Handling
-					AnimalStats speciesStats = new AnimalStats();
 
 					tempAnimal.GetComponent<AnimalStats>().deathAge = deathAge;
 					tempAnimal.GetComponent<AnimalStats>().breedAge = breedAge;
@@ -142,6 +138,9 @@ public class SpeciesCreator : MonoBehaviour {
 					tempAnimal.GetComponent<AnimalStats>().sNumber = (SpeciesManage.speciesCount);
 					tempAnimal.GetComponent<AnimalStats>().genderVal = Random.Range (0,2);
 					tempAnimal.GetComponent<AnimalStats>().speed = speed;
+					tempAnimal.GetComponent<AnimalStats>().motherObj = gameObject;
+					tempAnimal.GetComponent<AnimalStats>().fatherObj = gameObject;
+					tempAnimal.GetComponent<AnimalStats>().aggression = aggression;
 
 					//Instantiate(tempAnimal,spawnZone, nullQuart);
                        	

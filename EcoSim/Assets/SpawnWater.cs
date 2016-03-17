@@ -29,7 +29,7 @@ public class SpawnWater : MonoBehaviour {
 			tempWater.transform.localScale = new Vector3(Random.Range (20,40),0.2f,Random.Range (20,40));
 
 			Instantiate(tempWater);
-			tempWater.transform.parent = transform;
+			//tempWater.transform.parent = transform.parent;
 			int posx = Random.Range(terrainPosX, terrainPosX + terrainWidth);
 			int posz = Random.Range(terrainPosZ, terrainPosZ + terrainLength);
 			float posy = Terrain.activeTerrain.SampleHeight(new Vector3(posx, 0, posz));

@@ -10,7 +10,6 @@ public class TreeManage : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	visTreeCount = treeCount;  
+	void Update () { 
 	}
 }

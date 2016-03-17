@@ -3,8 +3,10 @@ using System.Collections;
 
 public class TreeController : MonoBehaviour
 {
+	public GameObject tCont;
 	public GameObject fruitPrefab;
     public int maxTrees = 100;
+	public int tCount;
 
     public float age = 0;
     public int breedStr;
@@ -31,6 +33,9 @@ public class TreeController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+		tCont = transform.parent.gameObject;
+		tCont.GetComponent<TreeManage> ().visTreeCount++;
+		name = ("Tree" + tCont.GetComponent<TreeManage> ().visTreeCount);
 
 		RecentlyBred = false;
         breedStr = Random.Range(10, 25);
@@ -38,22 +43,28 @@ public class TreeController : MonoBehaviour
         growSpeed = Random.Range(1.00001f, 1.00005f);
         maxSize = Random.Range(5.0f, 20.0f);
         heightModify = Random.Range(3.0f, 10.0f);
-		maxFruit = (int)breedStr * (int)maxSize;
 		age = 0;
         spaceNeeded = (maxSize * 2.5f);
         Vector3 temp = new Vector3(sizeModify,sizeModify*heightModify,sizeModify);
         transform.localScale = temp;
             temp = new Vector3(transform.position.x ,(Terrain.activeTerrain.SampleHeight(transform.position)+(transform.localScale.y)),transform.position.z);
         transform.position = temp;
-        name = ("Tree" + TreeManage.treeCount);
+		//ransform.localScale -= Vector3 (1, 1, 1);
+		transform.localScale -= new Vector3(transform.localScale.x -1,transform.localScale.y-1,transform.localScale.z-1);
+
+		health = sizeModify * maxSize;
     }
 
     // Update is called once per frame
     void Update()
     {
+		//int tCount = gameObject.transform.parent.GetComponent<TreeManage>().visTreeCount;
         age += 0.1f;
-		if (Random.Range(0, 100) < 1) {
-			spawnFruit();
+		if (age > BREED_AGE) {
+			if (Random.Range (0, 1000) < 1) {
+				maxFruit = ((int)breedStr * (int)sizeModify * ((int)age / 10)) / 10;
+				spawnFruit ();
+			}
 		}
         if (transform.localScale.y < maxSize)
         {
@@ -91,7 +102,7 @@ public class TreeController : MonoBehaviour
 
     void spawnSappling(int breedStr)
     {
-        if (maxTrees > TreeManage.treeCount)
+        if (maxTrees > tCont.GetComponent<TreeManage>().visTreeCount)
         {
             if (breedStr > 0)
             {
@@ -108,30 +119,19 @@ public class TreeController : MonoBehaviour
 					if (breedrandom == 1||breedrandom ==2||breedrandom ==3||breedrandom ==4||breedrandom ==5)
 						breedStr--;
 					if (breedrandom == 9||breedrandom ==10)
-						breedStr++;
-					TreeManage.treeCount++;    
+						breedStr++;    
                     //GameObject originTree = new GameObject();
                     //originTree = gameObject;
 
-                    GameObject tempTree ;// = new GameObject(); 
-
-                    tempTree = Instantiate<GameObject>(gameObject);
-                    tempTree.name = (gameObject.name + " " + TreeManage.treeCount);         //set tree name to parent name+unique number         
+                    GameObject tempTree ;// = new GameObject(); 	
+                    tempTree = Instantiate<GameObject>(gameObject);//Copy mother tree, instantiate child as a clone of mother
+					foreach (Transform child in tempTree.transform) {
+						Destroy(child.gameObject);		//delete any fruits we copied from mother tree
+					}
+                    tempTree.name = (gameObject.name + " " + tCount);         //set tree name to parent name+unique number         
                     tempTree.transform.position = spawnPos;                                 //Move clone to new position
 					tempTree.transform.parent = transform.parent;
 					tempTree.GetComponent<TreeController>().RecentlyBred = false;
-                    //Instantiate(tempTree, spawnPos, tempQuart);                             //create our tree using 'tempTree'
-
-                    //tempTree.AddComponent<
-                    //tempTree.AddComponent<TreeController>();                   
-                    //tempTree.name = ("Tree" + TreeManage.treeCount);
-                    //Instantiate(tempTree)
-//					tempAnimal = Instantiate(animalPrefab);
-//					
-//					tempAnimal.name = ("ThisAnimal" + i);
-//					tempAnimal.transform.parent = gSpecies.transform;
-//					tempAnimal.AddComponent<AnimalStats>();
-//					tempAnimal.AddComponent<NavMeshAgent>();
                      
                 }
             }
@@ -141,26 +141,39 @@ public class TreeController : MonoBehaviour
     void grow()
     {
         gameObject.transform.localScale *= growSpeed;
+		gameObject.transform.localScale = new Vector3(transform.localScale.x,transform.localScale.y* growSpeed*growSpeed*growSpeed,transform.localScale.z);
         Vector3 tempVec = new Vector3(transform.position.x ,(Terrain.activeTerrain.SampleHeight(transform.position)+(transform.localScale.y)),transform.position.z);
         transform.position = tempVec;
     }
 	void spawnFruit()
 	{
-		GameObject tempFruit ;
-		tempFruit = Instantiate(fruitPrefab);
-		tempFruit.name = ("Fruit");     
+		if (maxFruit > fruitCount) {
+			GameObject tempFruit;
+			tempFruit = Instantiate (fruitPrefab);
+			tempFruit.name = ("Fruit");     
                  
 
-		tempFruit.transform.parent = transform;//Move clone to new position & parent to tree
+			tempFruit.transform.parent = transform;//Move clone to new position & parent to tree
 
-		Vector3 tempVec = transform.position;	//Pick random point around us 
-		tempVec += (Random.insideUnitSphere*3);
-		//tempVec = new Vector3(tempVec.x,(Terrain.activeTerrain.SampleHeight(tempFruit.transform.position)),tempVec.z);
-		tempFruit.transform.position = tempVec;
+			Vector3 tempVec = transform.position;	//Pick random point around us 
+			tempVec += (Random.insideUnitSphere * 3);
+			//tempVec = new Vector3(tempVec.x,(Terrain.activeTerrain.SampleHeight(tempFruit.transform.position)),tempVec.z);
+			tempFruit.transform.position = tempVec;
 
 
-		fruitCount++;
-		health -= 0.1f;
+			fruitCount++;
+			health -= 0.1f;
+		} else {
+			if (Random.Range (0,2) > 0)
+			{
+				tCount--;
+			}
+			health -= 0.3f;
+		}
+		if (health < 0) {
+			maxTrees++;
+			Destroy(gameObject);
+		}
 	}
 	
 }

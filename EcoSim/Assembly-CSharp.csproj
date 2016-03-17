@@ -47,6 +47,8 @@
   <ItemGroup>
      <Compile Include="Assets\AniamlSpawning.cs" />
      <Compile Include="Assets\AnimalStats.cs" />
+     <Compile Include="Assets\DisplayStats.cs" />
+     <Compile Include="Assets\FlyCamera.cs" />
      <Compile Include="Assets\FruitStats.cs" />
      <Compile Include="Assets\NpcNavigation.cs" />
      <Compile Include="Assets\SpawnWater.cs" />
